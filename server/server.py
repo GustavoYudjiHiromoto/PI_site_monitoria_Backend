@@ -119,6 +119,14 @@ def consultar_rank():
     # Converte os resultados para uma lista e os retorna como um array
     return (json_string)
 
+@app.route("/consultar_disciplina")
+def consultar_disciplina():
+     # Consulta todos os documentos na coleção "teste"
+    results = list(db.teste.distinct("nomeDisciplina"))  # Convert the Cursor object to a list
+    json_string = json.dumps(results, default=str)  # Serialize the list to JSON
+    # Converte os resultados para uma lista e os retorna como um array
+    return (json_string)
+
 @app.route("/consultar_horario")
 def consultar_horario():
      # Consulta todos os documentos na coleção "teste"

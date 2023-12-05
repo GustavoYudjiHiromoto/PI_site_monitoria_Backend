@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
 import { DialogHeader, DialogContent } from "../ui/dialog";
-
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -38,7 +38,13 @@ const disTituloDescSchema = z.object({
     .max(500, "Descrição muito longa"),
 });
 
-export const CardExercicios = ({ isMonitorScreenExModal }) => {
+async function getdata() {
+  const res = await fetch("http://127.0.0.1:8080/consultar_disciplina");
+  const disciplina = await res.json();
+  return disciplina;
+}
+
+export const CardExercicios =  ({ isMonitorScreenExModal }) => {
   const { toast } = useToast();
   const disTituloDescForm = useForm({
     resolver: zodResolver(disTituloDescSchema),
@@ -49,7 +55,36 @@ export const CardExercicios = ({ isMonitorScreenExModal }) => {
     },
   });
 
-  function onSubmit(data) {
+  let [disciplinas, setDisciplinas] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const disciplinaData = await getdata();
+        setDisciplinas(disciplinaData);
+        disciplinas = disciplinaData
+        console.log(disciplinas)
+      } catch (error) {
+        console.error("Erro ao obter dados:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  async function onSubmit(data) {
+    const { disciplina, tituloExercicio, descricaoExercicio } = data;
+    const url = `http://127.0.0.1:8080/cadastro_exercicio/${disciplina}/${tituloExercicio}/${descricaoExercicio}`;
+
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(users)
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
+
     toast({
       title: "Exercício cadastrado com sucesso!",
       description: (
@@ -61,9 +96,11 @@ export const CardExercicios = ({ isMonitorScreenExModal }) => {
       ),
     });
     console.log("Dados do formulário:", data);
+    
   }
 
   return (
+    
     <DialogContent className="sm:max-w-[325px] md:max-w-[425px]">
       <DialogHeader className="flex flex-col content-evenly pt-2 pb-3">
         <Form {...disTituloDescForm}>
@@ -87,15 +124,11 @@ export const CardExercicios = ({ isMonitorScreenExModal }) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="discilina1">
-                        Desenvolvimento Multiplataforma
-                      </SelectItem>
-                      <SelectItem value="discilina2">
-                        Banco de Dados Não Relacionais e Big Data
-                      </SelectItem>
-                      <SelectItem value="discilina3">
-                        Teoria da Computação
-                      </SelectItem>
+                    {disciplinas.map((disciplina, index) => (
+                        <SelectItem key={index} value={disciplina}>
+                          {disciplina}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
 

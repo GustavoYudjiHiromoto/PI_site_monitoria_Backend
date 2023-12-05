@@ -11,7 +11,9 @@ export const SignInButton = () => {
       instance
         .loginPopup(loginRequest)
         .then(() => {
-          window.location.href = "/admin";
+          
+            window.location.href = "/admin";
+
         })
         .catch((e) => {
           console.log(e);
