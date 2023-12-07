@@ -42,7 +42,7 @@ export default async function TelaRanking() {
           {posicao.map((pos, index) => (
               <TableRow className="text-center" key={index}>
                 <TableCell className="font-medium py-5">{pos.posicao}</TableCell>
-                <TableCell className="py-5">{users[index]?.nome || '-'}</TableCell>
+                <TableCell className="py-5">{users[index]?.nomealuno || '-'}</TableCell>
                 <TableCell className="text-center py-5">{users[index]?.pontuacao || '-'}</TableCell>
               </TableRow>
             ))}

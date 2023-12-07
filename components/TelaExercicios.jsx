@@ -23,14 +23,20 @@ import { CardTelaExercicio } from "./molecules/CardTelaExercicio";
 
 import { ModalTelaExercicios } from "./molecules/ModalTelaExercicios";
 async function getdata() {
-  const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const res = await fetch("http://127.0.0.1:8080/consultar_exercicio");
   const posts = await res.json();
   return posts;
 }
 async function getusers() {
-  const res = await fetch("https://jsonplaceholder.typicode.com/users");
+  const res = await fetch("http://127.0.0.1:8080/consultar_alunos");
   const users = await res.json();
   return users;
+}
+
+async function getdisci() {
+  const res = await fetch("http://127.0.0.1:8080/consultar_disciplina");
+  const disciplina = await res.json();
+  return disciplina;
 }
 
 // eslint-disable-next-line @next/next/no-async-client-component
@@ -41,7 +47,7 @@ export default async function TelaExercicios({
 }) {
   const posts = await getdata();
   const users = await getusers();
-
+  const disciplina = await getdisci()
   return (
     <main className="flex min-h-screen flex-col items-center p-12 bg-gradient-to-br from-[#82A0BC] font-sans scroll-smooth">
       <Navbar />
@@ -57,21 +63,11 @@ export default async function TelaExercicios({
             <SelectContent className="w-80 md:w-full">
               <SelectGroup>
                 <SelectLabel>Disciplinas</SelectLabel>
-                <SelectItem value="automatos">
-                  Teoria da Computação, Autômatos e Linguagens Formais
-                </SelectItem>
-                <SelectItem value="multiplataforma">
-                  Desenvolvimento Multiplataforma
-                </SelectItem>
-                <SelectItem value="engenhariaSoftware">
-                  Engenharia de Software
-                </SelectItem>
-                <SelectItem value="algebraLinear">
-                  Álgebra Linear e Geometria Analítica
-                </SelectItem>
-                <SelectItem value="NoSQL">
-                  Banco de Dados NoSQL e Big Data
-                </SelectItem>
+                {disciplina.map((disciplina, index) => (
+                        <SelectItem key={index} value={disciplina}>
+                          {disciplina}
+                        </SelectItem>
+                  ))}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -86,13 +82,13 @@ export default async function TelaExercicios({
         </div>
         <div className="flex flex-col gap-8 mt-5">
           {posts.map((post) => (
-            <Dialog key={post.id}>
+            <Dialog key={post.tituloExercicio}>
               <DialogTrigger>
-                <CardTelaExercicio title={post.title} />
+                <CardTelaExercicio title={post.tituloExercicio} />
               </DialogTrigger>
               <DialogContent className="flex flex-col w-full overflow-auto max-h-screen">
-                <DialogHeader>{post.title}</DialogHeader>
-                <DialogDescription className="">{post.body}</DialogDescription>
+                <DialogHeader>{post.tituloExercicio}</DialogHeader>
+                <DialogDescription className="">{post.descricaoExercicio}</DialogDescription>
                 <Dialog>
                   <DialogTrigger>
                     <Button className="flex w-full">
@@ -104,7 +100,7 @@ export default async function TelaExercicios({
                       users.map((user) => (
                         <ModalTelaExercicios
                           key={user.id}
-                          name={user.name}
+                          nomealuno={user}
                           body={post.body}
                           id={user.id}
                           modifyAccess={modifyAccess}
@@ -114,7 +110,7 @@ export default async function TelaExercicios({
                     ) : (
                       <ModalTelaExercicios
                         key={post.id}
-                        name={post.title}
+                        nomealuno={user}
                         body={post.body}
                         id={post.id}
                         modifyAccess={modifyAccess}

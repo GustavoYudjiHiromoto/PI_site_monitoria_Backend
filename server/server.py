@@ -41,9 +41,9 @@ db = mongondb_client.db
 @app.route("/cadastro_aluno/<nome>/<email>/<pontuacao>")
 def cadastro_aluno(nome,email,pontuacao):
     db.teste.insert_one({
-        "nome":nome,
+        "nomealuno":nome,
         "email":email,
-        "pontuacao":9
+        "pontuacao":10
     })
     return redirect(url_for("admin"))
 
@@ -100,6 +100,14 @@ def cadastro_exercicio(disciplina,tituloExercicio,descricaoExercicio):
     })
     return redirect(url_for("admin"))
 
+# @app.route("/cadastro_resposta/<resposta>/<emailaluno>")
+# def cadastro_exercicio(resposta,emailaluno):
+#     db.teste.insert_one({
+#         "resposta":resposta,
+#         "emailaluno":emailaluno,
+#     })
+#     return redirect(url_for("admin"))
+
 @app.route("/add_algos")
 def add_algos():
     data_to_insert = [
@@ -119,6 +127,14 @@ def consultar_rank():
     # Converte os resultados para uma lista e os retorna como um array
     return (json_string)
 
+@app.route("/consultar_alunos")
+def consultar_alunos():
+     # Consulta todos os documentos na coleção "teste"
+    results = list(db.teste.distinct("nomealuno"))  # Convert the Cursor object to a list
+    json_string = json.dumps(results, default=str)  # Serialize the list to JSON
+    # Converte os resultados para uma lista e os retorna como um array
+    return (json_string)
+
 @app.route("/consultar_disciplina")
 def consultar_disciplina():
      # Consulta todos os documentos na coleção "teste"
@@ -127,10 +143,18 @@ def consultar_disciplina():
     # Converte os resultados para uma lista e os retorna como um array
     return (json_string)
 
+@app.route("/consultar_exercicio")
+def consultar_exercicio():
+     # Consulta todos os documentos na coleção "teste"
+    results = list(db.teste.find({"tituloExercicio": {"$exists": True}, "descricaoExercicio": {"$exists": True}}, {"_id": 0, "tituloExercicio": 1, "descricaoExercicio": 1}))
+    json_string = json.dumps(results, default=str)  # Serialize the list to JSON
+    # Converte os resultados para uma lista e os retorna como um array
+    return (json_string)
+
 @app.route("/consultar_horario")
 def consultar_horario():
      # Consulta todos os documentos na coleção "teste"
-    results = list(db.teste.find())  # Convert the Cursor object to a list
+    results = list(db.teste.find({"nomealuno": {"$exists": False}}))  # Convert the Cursor object to a list
     json_string = json.dumps(results, default=str)  # Serialize the list to JSON
     # Converte os resultados para uma lista e os retorna como um array
     return (json_string)

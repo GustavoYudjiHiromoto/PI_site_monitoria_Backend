@@ -3,6 +3,7 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -35,6 +36,29 @@ const FormSchema = z.object({
   }),
 });
 
+// async function getusers() {
+//   const res = await fetch("http://127.0.0.1:8080/consultar_alunos");
+//   const users = await res.json();
+//   return users;
+// }
+
+// let [users, setusers] = useState([]);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const userData = await getdata();
+//         setusers(userData);
+//         users = userData
+//         console.log(users)
+//       } catch (error) {
+//         console.error("Erro ao obter dados:", error);
+//       }
+//     };
+
+//     fetchData();
+//   }, []);
+
 const FormSchemaNota = z.object({
   nota: z
     .string()
@@ -50,7 +74,7 @@ const FormSchemaNota = z.object({
 export const ModalTelaExercicios = ({
   viewOnly,
   modifyAccess,
-  name,
+  nomealuno,
   body,
   id,
 }) => {
@@ -70,11 +94,24 @@ export const ModalTelaExercicios = ({
   });
 
   function onSubmit(data) {
-    toast({
-      description: "Resposta enviada com sucesso!",
-    });
-    console.log(data);
-  }
+
+  //   const { resposta, emailaluno } = data;
+  //   const url = `http://127.0.0.1:8080/cadastro_resposta/${resposta}/${emailaluno}`;
+
+  // fetch(url)
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     console.log(users)
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error fetching data:", error);
+  //   });
+
+  //   toast({
+  //     description: "Resposta enviada com sucesso!",
+  //   });
+  //   console.log(data);
+ }
 
   function onSubmitNota(data) {
     toast({
@@ -93,15 +130,16 @@ export const ModalTelaExercicios = ({
       {modifyAccess ? (
         <Card key={id} className="flex w-full">
           <CardContent className="flex flex-row items-center p-2 flex-grow justify-between">
-            <CardTitle className="text-start text-sm">{name}</CardTitle>
+            <CardTitle className="text-start text-sm">{nomealuno}</CardTitle>
             <Dialog>
               <DialogTrigger>
                 <Button>Resposta</Button>
               </DialogTrigger>
               <DialogContent className="overflow-auto max-h-screen">
-                <DialogHeader>Resposta de {name}</DialogHeader>
+                <DialogHeader>Resposta de {nomealuno}</DialogHeader>
                 <DialogDescription className="flex flex-col gap-3">
-                  {body}
+                  AFND
+
                   {!viewOnly && (
                     <>
                       <FormProvider {...formNota}>
@@ -145,7 +183,7 @@ export const ModalTelaExercicios = ({
       ) : (
         <Card key={id}>
           <CardContent className="flex flex-col items-center p-2 flex-grow justify-between gap-3">
-            <CardTitle className="text-start text-sm">{name}</CardTitle>
+            <CardTitle className="text-start text-sm">{nomealuno}</CardTitle>
             <CardDescription>{body}</CardDescription>
             <FormProvider {...form}>
               <form
